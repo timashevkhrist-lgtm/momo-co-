@@ -44,12 +44,6 @@ momo-co/
 npx serve .
 ```
 
-## Публикация на GitHub Pages
-
-1. Залейте содержимое папки в репозиторий.
-2. **Settings → Pages → Build and deployment → Source: Deploy from a branch**, ветка `main`, папка `/ (root)`.
-3. Через минуту сайт будет доступен по адресу `https://<username>.github.io/<repo>/`.
-
 ## Заметки
 
 - Формы демонстрационные: данные никуда не отправляются, показывается только окно подтверждения.
