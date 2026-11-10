@@ -1,0 +1,63 @@
+/* ==========================================================================
+   MOMO & CO. — custom styles
+   Дополняет Tailwind: hairline-рамки, состояния модалки, скроллбар.
+   ========================================================================== */
+
+/* ---------- Base ---------- */
+::selection {
+    background-color: #0038FF;
+    color: #FFFFFF;
+}
+
+/* Якоря не прячутся под липкой шапкой */
+section[id] {
+    scroll-margin-top: 110px;
+}
+
+body.is-locked {
+    overflow: hidden;
+}
+
+/* ---------- Hairlines ---------- */
+.hairline-b   { border-bottom: 1px solid rgba(17, 17, 17, 0.08); }
+.hairline-t   { border-top:    1px solid rgba(17, 17, 17, 0.08); }
+.hairline-r   { border-right:  1px solid rgba(17, 17, 17, 0.08); }
+.hairline-all { border:        1px solid rgba(17, 17, 17, 0.08); }
+
+/* ---------- Cards ---------- */
+.card-editorial {
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-editorial:hover {
+    border-color: #0038FF;
+}
+
+/* ---------- Modal ---------- */
+#bookingModalBackdrop.is-open #bookingModalCard {
+    transform: scale(1);
+}
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+::-webkit-scrollbar-track {
+    background: #F9F8F5;
+}
+::-webkit-scrollbar-thumb {
+    background: #D1D5DB;
+    border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #0038FF;
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}

@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOMO & CO. — Архитектурное кафе для мам и детей</title>
+    <meta name="description" content="Семейное спешелти-кафе в Санкт-Петербурге: горячий кофе для мам, Монтессори-игровая с бэбиситтером, лаундж для кормления и детское меню.">
+    <meta name="theme-color" content="#0038FF">
+    <meta property="og:title" content="MOMO & CO. — кафе для мам и детей">
+    <meta property="og:description" content="Спешелти кофе, Монтессори-игровая и бэбиситтер в зале. Наб. реки Мойки, 64.">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230038FF'/%3E%3Ctext x='16' y='22' font-family='Arial' font-weight='700' font-size='16' text-anchor='middle' fill='white'%3EM%3C/text%3E%3C/svg%3E">
+
+    <!-- Google Fonts: Syne (Ultra-bold architectural headers), Plus Jakarta Sans (Clean geometric body), Space Mono (Technical labels) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (Play CDN) + design tokens -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/js/tailwind.config.js"></script>
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="bg-paper text-ink font-jakarta antialiased selection:bg-cobalt selection:text-white flex flex-col min-h-screen">
+
+    <!-- Sticky Architectural Navigation -->
+    <header class="sticky top-0 z-40 bg-paper/95 backdrop-blur-md hairline-b transition-all">
+        <!-- Top Operational Bar -->
+        <div class="hairline-b bg-paper-tint/60 px-4 md:px-8 py-2 text-[11px] font-mono flex justify-between items-center text-ink-muted">
+            <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-1.5 font-medium text-ink">
+                    <span id="openStatusDot" class="w-2 h-2 rounded-full bg-cobalt animate-pulse"></span>
+                    <span id="openStatusText">Открыто до 21:00</span>
+                </span>
+                <span class="hidden sm:inline opacity-30">/</span>
+                <span class="hidden sm:inline">Санкт-Петербург, наб. реки Мойки, 64</span>
+            </div>
+            <div class="flex items-center gap-4 text-xs">
+                <span class="hidden md:inline font-mono text-cobalt font-bold">● Свободно 3 стола у игровой</span>
+                <span class="font-mono text-ink text-[11px]" id="currentClock">12:00</span>
+            </div>
+        </div>
+
+        <!-- Main Nav -->
+        <div class="max-w-[1440px] mx-auto px-4 md:px-8 py-4 flex items-center justify-between gap-3">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-2 group">
+                <span class="font-syne font-extrabold text-2xl tracking-tighter text-ink group-hover:text-cobalt transition-colors">
+                    MOMO & CO<span class="text-cobalt inline-block transform group-hover:translate-x-0.5 transition-transform">.</span>
+                </span>
+                <span class="hidden sm:inline-block px-2 py-0.5 rounded-full bg-cobalt-subtle text-cobalt font-mono text-[10px] font-bold uppercase tracking-wider">
+                    Family & Specialty
+                </span>
+            </a>
+
+            <!-- Nav Links -->
+            <nav class="hidden lg:flex items-center gap-8 font-mono text-xs uppercase tracking-wider text-ink-muted">
+                <a href="#space" class="hover:text-cobalt transition-colors">[ Пространство ]</a>
+                <a href="#philosophy" class="hover:text-cobalt transition-colors">[ Концепция ]</a>
+                <a href="#menu" class="hover:text-cobalt transition-colors">[ Меню ]</a>
+                <a href="#location" class="hover:text-cobalt transition-colors">[ Локация ]</a>
+            </nav>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-3">
+                <button onclick="openBookingModal()" class="px-4 sm:px-5 py-2.5 rounded-full bg-cobalt text-white font-mono text-xs uppercase tracking-wider font-bold hover:bg-cobalt-hover transition-all shadow-sm flex items-center gap-2 shrink-0">
+                    <span class="hidden sm:inline">Забронировать</span>
+                    <span class="sm:hidden">Бронь</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </button>
+
+                <!-- Mobile Hamburger Toggle -->
+                <button id="mobileMenuToggle" class="lg:hidden p-2 rounded-lg hairline-all bg-white hover:border-cobalt transition-colors" aria-label="Открыть навигацию" aria-expanded="false" aria-controls="mobileDrawer">
+                    <svg class="w-5 h-5 text-ink" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer -->
+        <div id="mobileDrawer" class="hidden lg:hidden hairline-t bg-paper px-6 py-6 font-mono text-xs uppercase tracking-wider space-y-4">
+            <a href="#space" class="block py-2 hairline-b text-ink hover:text-cobalt mobile-link">Пространство</a>
+            <a href="#philosophy" class="block py-2 hairline-b text-ink hover:text-cobalt mobile-link">Концепция</a>
+            <a href="#menu" class="block py-2 hairline-b text-ink hover:text-cobalt mobile-link">Кураторское Меню</a>
+            <a href="#location" class="block py-2 text-ink hover:text-cobalt mobile-link">Локация и удобства</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hairline-b overflow-hidden relative pt-12 md:pt-20 pb-16">
+        <div class="max-w-[1440px] mx-auto px-4 md:px-8">
+            
+            <!-- Super Headline Block -->
+            <div class="max-w-5xl mb-12">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="w-2.5 h-2.5 rounded-full bg-cobalt"></span>
+                    <span class="font-mono text-xs uppercase tracking-widest text-cobalt font-bold">
+                        Архитектурный стандарт заботы
+                    </span>
+                </div>
+                
+                <h1 class="font-syne font-extrabold text-4xl sm:text-6xl md:text-7xl lg:text-[5.25rem] text-ink uppercase tracking-tight leading-[0.96]">
+                    Место для мам, где <span class="text-cobalt inline-block">хорошо</span> обоим.
+                </h1>
+
+                <p class="mt-8 text-base md:text-xl text-ink-muted max-w-2xl font-light leading-relaxed">
+                    Спешелти кофе свежей обжарки, эстетика визуальной тишины и сертифицированная Монтессори-среда из натурального ясеня для первых открытий вашего малыша.
+                </p>
+
+                <!-- Pill Badges -->
+                <div class="mt-8 flex flex-wrap gap-2 pt-2">
+                    <span class="px-3.5 py-1.5 rounded-full bg-white hairline-all text-xs font-mono text-ink tracking-wide">
+                        0+ Friendly
+                    </span>
+                    <span class="px-3.5 py-1.5 rounded-full bg-white hairline-all text-xs font-mono text-ink tracking-wide">
+                        Эко-материалы из ясеня
+                    </span>
+                    <span class="px-3.5 py-1.5 rounded-full bg-white hairline-all text-xs font-mono text-ink tracking-wide">
+                        Специальная детская посуда
+                    </span>
+                    <span class="px-3.5 py-1.5 rounded-full bg-cobalt text-white text-xs font-mono tracking-wide font-medium">
+                        Дежурные няни-ассистенты
+                    </span>
+                </div>
+            </div>
+
+            <!-- Large Editorial Hero Image Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                <!-- Main Architectural Photo -->
+                <div class="lg:col-span-8 relative rounded-2xl overflow-hidden min-h-[380px] md:min-h-[500px] bg-paper-tint hairline-all group">
+                    <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=1600" 
+                         alt="Интерьер кофейни Momo & Co" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/1600x900/F1EFEA/0038FF?text=MOMO+%26+CO+INTERIOR';"
+                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]">
+                    
+                    <div class="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-transparent"></div>
+
+                    <!-- Overlay Bottom Card -->
+                    <div class="absolute bottom-6 left-6 right-6 p-6 rounded-xl bg-white/95 backdrop-blur-md hairline-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <span class="font-mono text-[10px] text-cobalt font-bold uppercase tracking-widest block mb-1">
+                                // 01. ПРОСТРАНСТВО БЕЗ ХАОСА
+                            </span>
+                            <h3 class="font-syne font-bold text-lg text-ink">Скандинавский свет & Безопасная геометрия</h3>
+                        </div>
+                        <a href="#space" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ink text-white font-mono text-xs uppercase hover:bg-cobalt transition-colors shrink-0">
+                            <span>Исследовать залы</span>
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Secondary Hero Sidecard -->
+                <div class="lg:col-span-4 flex flex-col justify-between gap-6">
+                    <div class="p-8 rounded-2xl bg-white hairline-all card-editorial flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="font-mono text-xs text-cobalt font-bold">[ ФИЛОСОФИЯ 01 ]</span>
+                                <span class="w-2 h-2 rounded-full bg-cobalt"></span>
+                            </div>
+                            <h3 class="font-syne font-bold text-2xl uppercase tracking-tight text-ink mb-3">
+                                Кофе горячий. Всегда.
+                            </h3>
+                            <p class="text-sm text-ink-muted leading-relaxed font-light">
+                                Мы знаем, как часто мамы пьют холодный кофе. В Momo & Co ваш напиток подается идеальной температуры, пока ребенок занят развивающей игрой под присмотром.
+                            </p>
+                        </div>
+                        <div class="pt-6 hairline-t mt-6 flex items-center justify-between text-xs font-mono">
+                            <span class="text-ink-muted">Q-Grader зерно 87+</span>
+                            <span class="text-cobalt font-bold">100% Арабика</span>
+                        </div>
+                    </div>
+
+                    <!-- Mini Metric Box (Bleu Style) -->
+                    <div class="p-6 rounded-2xl bg-cobalt text-white flex items-center justify-between">
+                        <div>
+                            <div class="font-syne font-extrabold text-3xl">320 м²</div>
+                            <div class="text-xs font-mono opacity-80 uppercase tracking-wider mt-0.5">Чистого простора для семей</div>
+                        </div>
+                        <div class="h-10 w-[1px] bg-white/20"></div>
+                        <div>
+                            <div class="font-syne font-extrabold text-3xl">0+</div>
+                            <div class="text-xs font-mono opacity-80 uppercase tracking-wider mt-0.5">С рождения до школы</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Philosophy & Standards Section -->
+    <section id="philosophy" class="hairline-b py-20 bg-paper">
+        <div class="max-w-[1440px] mx-auto px-4 md:px-8">
+            
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+                <div>
+                    <span class="font-mono text-xs uppercase tracking-widest text-cobalt font-bold block mb-2">
+                        // СТАНДАРТЫ КОМФОРТА
+                    </span>
+                    <h2 class="font-syne font-extrabold text-3xl md:text-5xl uppercase tracking-tight text-ink">
+                        Три принципа Momo & Co
+                    </h2>
+                </div>
+                <p class="text-sm md:text-base text-ink-muted max-w-md font-light leading-relaxed">
+                    Мы исключили всё раздражающее, оставив только естественные материалы, тактильное удовольствие и высокий уровень сервиса.
+                </p>
+            </div>
+
+            <!-- 3 Columns with Hairlines -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-0 hairline-all rounded-2xl overflow-hidden bg-white">
+                
+                <!-- Pillar 01 -->
+                <div class="p-8 md:p-10 border-b md:border-b-0 md:border-r border-ink/[0.08] hover:bg-paper-tint/30 transition-colors flex flex-col justify-between">
+                    <div>
+                        <span class="font-mono text-xs font-bold text-cobalt block mb-6">[ 01 / СРЕДА ]</span>
+                        <h3 class="font-syne font-bold text-2xl uppercase tracking-tight text-ink mb-4">
+                            Визуальная тишина
+                        </h3>
+                        <p class="text-sm text-ink-muted leading-relaxed font-light mb-6">
+                            Никакого визуального шума и кричащего пластика. Интерьер выдержан в природных текстурах архитектурного бетона, натурального льна и теплого дуба для разгрузки сенсорной системы мамы.
+                        </p>
+                    </div>
+                    <div class="font-mono text-[11px] text-ink-muted space-y-1.5 pt-4 hairline-t">
+                        <div class="flex items-center gap-2">
+                            <span class="w-1 h-1 rounded-full bg-cobalt"></span>
+                            <span>Акустические шумопоглощающие панели</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-1 h-1 rounded-full bg-cobalt"></span>
+                            <span>Тёплый рассеянный свет 2700K</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pillar 02 -->
+                <div class="p-8 md:p-10 border-b md:border-b-0 md:border-r border-ink/[0.08] hover:bg-paper-tint/30 transition-colors flex flex-col justify-between">
+                    <div>
+                        <span class="font-mono text-xs font-bold text-cobalt block mb-6">[ 02 / ВКУС ]</span>
+                        <h3 class="font-syne font-bold text-2xl uppercase tracking-tight text-ink mb-4">
+                            Спешелти культура
+                        </h3>
+                        <p class="text-sm text-ink-muted leading-relaxed font-light mb-6">
+                            Зерна спешелти обжарки от локальных чемпионов, растительное молоко без доплат, матча церемониального грейда и сбалансированные десерты без добавления рафинированного сахара.
+                        </p>
+                    </div>
+                    <div class="font-mono text-[11px] text-ink-muted space-y-1.5 pt-4 hairline-t">
+                        <div class="flex items-center gap-2">
+                            <span class="w-1 h-1 rounded-full bg-cobalt"></span>
+                            <span>La Marzocco Linea PB на баре</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-1 h-1 rounded-full bg-cobalt"></span>
+                            <span>Безглютеновое и веганское меню</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pillar 03 -->
+                <div class="p-8 md:p-10 hover:bg-paper-tint/30 transition-colors flex flex-col justify-between">
+                    <div>
+                        <span class="font-mono text-xs font-bold text-cobalt block mb-6">[ 03 / РАЗВИТИЕ ]</span>
+                        <h3 class="font-syne font-bold text-2xl uppercase tracking-tight text-ink mb-4">
+                            Безопасная игра
+                        </h3>
+                        <p class="text-sm text-ink-muted leading-relaxed font-light mb-6">
+                            Монтессори-модули, мебель со скругленными краями, экологичные деревянные конструкторы и сертифицированные бэбиситтеры, которые бережно вовлекают детей в творческий процесс.
+                        </p>
+                    </div>
+                    <div class="font-mono text-[11px] text-ink-muted space-y-1.5 pt-4 hairline-t">
+                        <div class="flex items-center gap-2">
+                            <span class="w-1 h-1 rounded-full bg-cobalt"></span>
+                            <span>Бэбиситтер в зале на каждой смене</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-1 h-1 rounded-full bg-cobalt"></span>
+                            <span>Полная видимость со всех столиков</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Space Zoning Explorer -->
+    <section id="space" class="hairline-b py-20 bg-paper-tint/40">
+        <div class="max-w-[1440px] mx-auto px-4 md:px-8">
+            
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                <div>
+                    <span class="font-mono text-xs uppercase tracking-widest text-cobalt font-bold block mb-2">
+                        // ЗОНИРОВАНИЕ ПРОСТРАНСТВА
+                    </span>
+                    <h2 class="font-syne font-extrabold text-3xl md:text-5xl uppercase tracking-tight text-ink">
+                        Архитектура Momo
+                    </h2>
+                </div>
+                <div class="font-mono text-xs text-ink-muted">
+                    Кликните по зоне для просмотра интерьера и оснащения
+                </div>
+            </div>
+
+            <!-- Tab Buttons (Batica Style) -->
+            <div class="flex flex-wrap gap-2 mb-8" id="zoneTabsContainer" role="tablist" aria-label="Зоны кафе">
+                <button onclick="selectZone('main')" id="tab-main" class="zone-tab-btn px-4 py-2.5 rounded-full font-mono text-xs uppercase tracking-wider font-bold transition-all bg-cobalt text-white">
+                    01. Главный зал и Бар
+                </button>
+                <button onclick="selectZone('play')" id="tab-play" class="zone-tab-btn px-4 py-2.5 rounded-full font-mono text-xs uppercase tracking-wider font-bold transition-all bg-white text-ink hairline-all hover:border-cobalt">
+                    02. Монтессори-остров
+                </button>
+                <button onclick="selectZone('care')" id="tab-care" class="zone-tab-btn px-4 py-2.5 rounded-full font-mono text-xs uppercase tracking-wider font-bold transition-all bg-white text-ink hairline-all hover:border-cobalt">
+                    03. Лаундж для кормления
+                </button>
+                <button onclick="selectZone('workshop')" id="tab-workshop" class="zone-tab-btn px-4 py-2.5 rounded-full font-mono text-xs uppercase tracking-wider font-bold transition-all bg-white text-ink hairline-all hover:border-cobalt">
+                    04. Мини-амфитеатр
+                </button>
+            </div>
+
+            <!-- Dynamic Zone Display Card -->
+            <div class="rounded-2xl bg-white hairline-all overflow-hidden grid grid-cols-1 lg:grid-cols-12 shadow-sm">
+                <!-- Zone Visual -->
+                <div class="lg:col-span-7 h-[360px] md:h-[480px] relative overflow-hidden bg-paper-tint">
+                    <img id="zoneImage" 
+                         src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?auto=format&fit=crop&q=80&w=1200" 
+                         alt="Зона кофейни" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/1200x800/F1EFEA/0038FF?text=MOMO+ZONE';"
+                         class="w-full h-full object-cover transition-opacity duration-300">
+                    <div class="absolute top-4 left-4">
+                        <span id="zoneTag" class="px-3 py-1 rounded-full bg-ink/90 backdrop-blur-sm text-white font-mono text-[10px] uppercase font-bold tracking-wider">
+                            Вместимость: 40 посадочных мест
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Zone Specification Details -->
+                <div class="lg:col-span-5 p-8 md:p-10 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span id="zoneNumber" class="font-mono text-xs font-bold text-cobalt tracking-widest">[ ЗОНА 01 ]</span>
+                            <span class="font-mono text-xs text-ink-muted">320 м² комплекс</span>
+                        </div>
+                        <h3 id="zoneTitle" class="font-syne font-bold text-2xl md:text-3xl uppercase tracking-tight text-ink mb-4">
+                            Главный зал и Кофе-бар
+                        </h3>
+                        <p id="zoneDesc" class="text-sm text-ink-muted leading-relaxed font-light mb-8">
+                            Светлый минималистичный зал с широкими проходами для прогулочных колясок, круглыми дубовыми столами и мягкими диванами. Бариста готовят спешелти кофе прямо у вас на виду.
+                        </p>
+
+                        <!-- Amenities List -->
+                        <div class="space-y-3 mb-8">
+                            <span class="font-mono text-xs uppercase text-ink font-bold block">Оснащение и удобства:</span>
+                            <div id="zoneAmenities" class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-paper text-ink font-mono text-xs rounded-lg hairline-all">Стульчики Stokke Tripp Trapp</span>
+                                <span class="px-3 py-1 bg-paper text-ink font-mono text-xs rounded-lg hairline-all">Розетки у каждого столика</span>
+                                <span class="px-3 py-1 bg-paper text-ink font-mono text-xs rounded-lg hairline-all">Просторная парковка колясок</span>
+                                <span class="px-3 py-1 bg-paper text-ink font-mono text-xs rounded-lg hairline-all">HEPA-14 фильтрация</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 hairline-t flex items-center justify-between">
+                        <span class="font-mono text-xs text-ink-muted">Вид на игровую из зала</span>
+                        <button onclick="openBookingModal()" class="px-5 py-2 rounded-full bg-ink text-white font-mono text-xs uppercase tracking-wider font-bold hover:bg-cobalt transition-colors">
+                            Выбрать этот зал
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Curated Editorial Menu -->
+    <section id="menu" class="hairline-b py-20 bg-paper">
+        <div class="max-w-[1440px] mx-auto px-4 md:px-8">
+            
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                <div>
+                    <span class="font-mono text-xs uppercase tracking-widest text-cobalt font-bold block mb-2">
+                        // КУРАТОРСКАЯ КАРТА
+                    </span>
+                    <h2 class="font-syne font-extrabold text-3xl md:text-5xl uppercase tracking-tight text-ink">
+                        Меню Momo & Co
+                    </h2>
+                </div>
+                
+                <!-- Category Filters -->
+                <div class="flex flex-wrap gap-2" id="menuFilters">
+                    <button onclick="filterMenu('all', this)" class="menu-filter-btn px-4 py-2 rounded-full font-mono text-xs uppercase font-bold transition-all bg-cobalt text-white">
+                        Все (8)
+                    </button>
+                    <button onclick="filterMenu('coffee', this)" class="menu-filter-btn px-4 py-2 rounded-full font-mono text-xs uppercase font-bold transition-all bg-white text-ink hairline-all hover:border-cobalt">
+                        Кофе & Напитки
+                    </button>
+                    <button onclick="filterMenu('brunch', this)" class="menu-filter-btn px-4 py-2 rounded-full font-mono text-xs uppercase font-bold transition-all bg-white text-ink hairline-all hover:border-cobalt">
+                        Бранчи весь день
+                    </button>
+                    <button onclick="filterMenu('kids', this)" class="menu-filter-btn px-4 py-2 rounded-full font-mono text-xs uppercase font-bold transition-all bg-white text-ink hairline-all hover:border-cobalt">
+                        Детское меню (от 6 мес)
+                    </button>
+                    <button onclick="filterMenu('dessert', this)" class="menu-filter-btn px-4 py-2 rounded-full font-mono text-xs uppercase font-bold transition-all bg-white text-ink hairline-all hover:border-cobalt">
+                        Raw-десерты
+                    </button>
+                </div>
+            </div>
+
+            <!-- Menu Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="menuItemsGrid">
+                <!-- Dynamically populated by JavaScript -->
+            </div>
+
+            <!-- Menu Micro Info Note -->
+            <div class="mt-12 p-6 rounded-2xl bg-white hairline-all flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-cobalt-subtle text-cobalt flex items-center justify-center font-bold text-lg shrink-0">
+                        🌱
+                    </div>
+                    <div>
+                        <h4 class="font-syne font-bold text-sm uppercase text-ink">Чистые ингредиенты без компромиссов</h4>
+                        <p class="text-xs text-ink-muted font-light mt-0.5">Всё растительное молоко взбивается без рафинированного сахара. Блюда для малышей готовятся без соли и консервантов.</p>
+                    </div>
+                </div>
+                <button onclick="showQuickToast('Аллергенная карта загружена: сообщите бариста о предпочтениях')" class="px-4 py-2 rounded-lg hairline-all font-mono text-xs uppercase hover:bg-paper-tint transition-colors shrink-0">
+                    Аллергенная карта
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Floating Pre-Order / Quick Cart Bar -->
+    <div id="quickOrderBar" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40 w-11/12 max-w-2xl bg-ink/95 backdrop-blur-md text-white rounded-2xl p-4 hairline-all shadow-2xl transition-all duration-300 translate-y-32 opacity-0 pointer-events-none flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-full bg-cobalt text-white flex items-center justify-center font-mono font-bold text-xs" id="cartCount">
+                0
+            </span>
+            <div>
+                <div class="font-mono text-xs text-white/80 uppercase">Предзаказ к вашему визиту</div>
+                <div class="font-syne font-bold text-base" id="cartSum">0 ₽</div>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="clearCart()" class="px-3 py-2 rounded-xl text-white/60 hover:text-white font-mono text-xs">
+                Очистить
+            </button>
+            <button onclick="openBookingWithOrder()" class="px-5 py-2 rounded-xl bg-cobalt text-white font-mono text-xs uppercase font-bold hover:bg-cobalt-hover transition-colors">
+                Оформить к столу
+            </button>
+        </div>
+    </div>
+
+    <!-- Table Reservation Section -->
+    <section id="reservation-section" class="hairline-b py-20 bg-paper-tint/30">
+        <div class="max-w-[1440px] mx-auto px-4 md:px-8">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <!-- Left Narrative -->
+                <div class="lg:col-span-5">
+                    <span class="font-mono text-xs uppercase tracking-widest text-cobalt font-bold block mb-2">
+                        // ОНЛАЙН РЕЗЕРВ
+                    </span>
+                    <h2 class="font-syne font-extrabold text-3xl md:text-5xl uppercase tracking-tight text-ink mb-6">
+                        Забронируйте столик заранее
+                    </h2>
+                    <p class="text-sm md:text-base text-ink-muted font-light leading-relaxed mb-8">
+                        Мы подготовим растущий стульчик под возраст ребенка, оставим удобное пространство для шасси коляски и передадим заказ на кухню к вашему приходу.
+                    </p>
+
+                    <!-- Features List -->
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-xl bg-white hairline-all flex items-start gap-4">
+                            <span class="w-6 h-6 rounded-full bg-cobalt-subtle text-cobalt flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</span>
+                            <div>
+                                <span class="font-syne font-bold text-xs uppercase text-ink block">Бесплатная отмена в любое время</span>
+                                <span class="text-xs text-ink-muted font-light">Мы понимаем режим малышей. Просто отмените бронь в Telegram или SMS.</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-xl bg-white hairline-all flex items-start gap-4">
+                            <span class="w-6 h-6 rounded-full bg-cobalt-subtle text-cobalt flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</span>
+                            <div>
+                                <span class="font-syne font-bold text-xs uppercase text-ink block">Няня включена в посещение</span>
+                                <span class="text-xs text-ink-muted font-light">Сенсорная игровая с бэбиситтером доступна каждому маленькому гостю.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Form Box -->
+                <div class="lg:col-span-7">
+                    <div class="p-8 md:p-10 rounded-3xl bg-white hairline-all shadow-sm">
+                        <div class="flex items-center justify-between pb-6 hairline-b mb-6">
+                            <h3 class="font-syne font-bold text-xl uppercase text-ink">Детали бронирования</h3>
+                            <span class="px-3 py-1 rounded-full bg-cobalt-subtle text-cobalt font-mono text-[11px] font-bold">БЕЗ ПРЕДОПЛАТЫ</span>
+                        </div>
+
+                        <form id="inlineReservationForm" onsubmit="handleReservationSubmit(event)">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label for="resDate" class="block font-mono text-xs uppercase text-ink font-bold mb-2">Дата</label>
+                                    <input type="date" id="resDate" required class="w-full px-4 py-3 rounded-xl hairline-all bg-paper font-mono text-xs focus:outline-none focus:border-cobalt">
+                                </div>
+                                <div>
+                                    <label for="resTime" class="block font-mono text-xs uppercase text-ink font-bold mb-2">Время слота</label>
+                                    <select id="resTime" class="w-full px-4 py-3 rounded-xl hairline-all bg-paper font-mono text-xs focus:outline-none focus:border-cobalt">
+                                        <option value="10:00">10:00 — Утренний капучино</option>
+                                        <option value="12:30">12:30 — Бранч & Игровая</option>
+                                        <option value="15:00" selected>15:00 — Спокойный полдник</option>
+                                        <option value="17:30">17:30 — Творческий час</option>
+                                        <option value="19:30">19:30 — Вечерний лаундж</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Counters -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                                <div class="p-4 rounded-xl bg-paper hairline-all flex items-center justify-between">
+                                    <div>
+                                        <span class="font-syne font-bold text-xs uppercase block">Взрослые</span>
+                                        <span class="text-[11px] text-ink-muted">Гости за столом</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <button type="button" onclick="modifyGuestCount('adults', -1)" class="w-8 h-8 rounded-lg bg-white hairline-all font-bold hover:bg-cobalt hover:text-white transition-colors">-</button>
+                                        <span id="adultsDisplay" class="font-mono font-bold text-sm w-4 text-center">1</span>
+                                        <button type="button" onclick="modifyGuestCount('adults', 1)" class="w-8 h-8 rounded-lg bg-white hairline-all font-bold hover:bg-cobalt hover:text-white transition-colors">+</button>
+                                    </div>
+                                </div>
+
+                                <div class="p-4 rounded-xl bg-paper hairline-all flex items-center justify-between">
+                                    <div>
+                                        <span class="font-syne font-bold text-xs uppercase block">Дети (0-7)</span>
+                                        <span class="text-[11px] text-ink-muted">Игровая зона</span>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <button type="button" onclick="modifyGuestCount('children', -1)" class="w-8 h-8 rounded-lg bg-white hairline-all font-bold hover:bg-cobalt hover:text-white transition-colors">-</button>
+                                        <span id="childrenDisplay" class="font-mono font-bold text-sm w-4 text-center">1</span>
+                                        <button type="button" onclick="modifyGuestCount('children', 1)" class="w-8 h-8 rounded-lg bg-white hairline-all font-bold hover:bg-cobalt hover:text-white transition-colors">+</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Specific Needs Checkboxes -->
+                            <div class="space-y-3 mb-6">
+                                <label class="flex items-center gap-3 p-3 rounded-xl hairline-all hover:bg-paper cursor-pointer transition-colors">
+                                    <input type="checkbox" id="needStokke" checked class="w-4 h-4 accent-cobalt">
+                                    <span class="text-xs font-mono text-ink">Растущий стульчик Stokke Tripp Trapp с ремнями безопасности</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 rounded-xl hairline-all hover:bg-paper cursor-pointer transition-colors">
+                                    <input type="checkbox" id="needBouncer" class="w-4 h-4 accent-cobalt">
+                                    <span class="text-xs font-mono text-ink">Эргономичный шезлонг для младенца (0-6 мес)</span>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 rounded-xl hairline-all hover:bg-paper cursor-pointer transition-colors">
+                                    <input type="checkbox" id="needView" checked class="w-4 h-4 accent-cobalt">
+                                    <span class="text-xs font-mono text-ink">Столик с прямым обзором игровой зоны</span>
+                                </label>
+                            </div>
+
+                            <!-- Contacts -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                                <input type="text" id="custName" placeholder="Ваше имя" aria-label="Ваше имя" autocomplete="name" required class="px-4 py-3 rounded-xl hairline-all bg-paper text-xs focus:outline-none focus:border-cobalt">
+                                <input type="tel" id="custPhone" placeholder="+7 (999) 000-00-00" aria-label="Телефон" autocomplete="tel" required class="px-4 py-3 rounded-xl hairline-all bg-paper text-xs focus:outline-none focus:border-cobalt">
+                            </div>
+
+                            <button type="submit" class="w-full py-4 rounded-xl bg-cobalt text-white font-mono text-xs uppercase font-bold tracking-wider hover:bg-cobalt-hover transition-colors shadow-sm flex items-center justify-center gap-2">
+                                <span>Подтвердить бронирование</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Location & Parent Amenities -->
+    <section id="location" class="hairline-b py-20 bg-paper">
+        <div class="max-w-[1440px] mx-auto px-4 md:px-8">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                <!-- Location Details -->
+                <div class="lg:col-span-6 flex flex-col justify-between">
+                    <div>
+                        <span class="font-mono text-xs uppercase tracking-widest text-cobalt font-bold block mb-2">
+                            // ЛОКАЦИЯ И ДОСТУПНОСТЬ
+                        </span>
+                        <h2 class="font-syne font-extrabold text-3xl md:text-5xl uppercase tracking-tight text-ink mb-6">
+                            В центре тишины
+                        </h2>
+                        <p class="text-sm md:text-base text-ink-muted font-light leading-relaxed mb-8">
+                            Мы расположились в исторической части города с широкой набережной, удобной для прогулок с коляской. Вход оборудован плавным пологим пандусом без ступеней.
+                        </p>
+
+                        <!-- Amenity tags -->
+                        <div class="grid grid-cols-2 gap-4 mb-8">
+                            <div class="p-4 rounded-xl bg-white hairline-all">
+                                <span class="font-syne font-bold text-xs uppercase block text-ink mb-1">Парковка колясок</span>
+                                <span class="text-xs text-ink-muted font-light">Охраняемый теплый бокс внутри кафе</span>
+                            </div>
+                            <div class="p-4 rounded-xl bg-white hairline-all">
+                                <span class="font-syne font-bold text-xs uppercase block text-ink mb-1">Комната заботы</span>
+                                <span class="text-xs text-ink-muted font-light">Органические подгузники и крем бесплатно</span>
+                            </div>
+                            <div class="p-4 rounded-xl bg-white hairline-all">
+                                <span class="font-syne font-bold text-xs uppercase block text-ink mb-1">Для работы мам</span>
+                                <span class="text-xs text-ink-muted font-light">Скоростной Wi-Fi 200 Мбит & розетки Type-C</span>
+                            </div>
+                            <div class="p-4 rounded-xl bg-white hairline-all">
+                                <span class="font-syne font-bold text-xs uppercase block text-ink mb-1">Чистый воздух</span>
+                                <span class="text-xs text-ink-muted font-light">Двойная очистка и контроль CO2</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Direct Contact -->
+                    <div class="p-6 rounded-2xl bg-white hairline-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <span class="font-mono text-xs text-cobalt font-bold">НАБ. РЕКИ МОЙКИ, 64</span>
+                            <div class="font-syne font-bold text-lg text-ink">Ежедневно 09:00 — 21:00</div>
+                        </div>
+                        <button onclick="copyAddressToClipboard()" class="px-4 py-2 rounded-full bg-paper hairline-all font-mono text-xs uppercase hover:border-cobalt transition-colors shrink-0">
+                            Скопировать адрес
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Architectural Atmosphere Map / Visual -->
+                <div class="lg:col-span-6 relative rounded-3xl overflow-hidden min-h-[400px] hairline-all bg-paper-tint group">
+                    <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=1200" 
+                         alt="Фасад и кофейня" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/1200x800/F1EFEA/0038FF?text=MOMO+LOCATION';"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                    
+                    <div class="absolute inset-0 bg-ink/20"></div>
+
+                    <div class="absolute bottom-6 left-6 right-6 p-6 rounded-2xl bg-white/95 backdrop-blur-md hairline-all flex items-center justify-between">
+                        <div>
+                            <div class="font-mono text-[10px] text-cobalt uppercase font-bold tracking-widest">Пешая доступность</div>
+                            <div class="font-syne font-bold text-sm text-ink">7 минут от метро Адмиралтейская</div>
+                        </div>
+                        <a href="https://yandex.ru/maps/?text=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3%2C%20%D0%BD%D0%B0%D0%B1.%20%D1%80%D0%B5%D0%BA%D0%B8%20%D0%9C%D0%BE%D0%B9%D0%BA%D0%B8%2C%2064" target="_blank" rel="noopener" class="px-4 py-2 rounded-full bg-cobalt text-white font-mono text-xs uppercase font-bold hover:bg-cobalt-hover transition-colors">
+                            Карта
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Minimalist Architectural Footer -->
+    <footer class="bg-paper-tint/60 text-ink hairline-t mt-auto">
+        <div class="max-w-[1440px] mx-auto px-4 md:px-8 py-16">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-12 hairline-b">
+                <!-- Col 1 -->
+                <div>
+                    <a href="#" class="font-syne font-extrabold text-2xl tracking-tighter text-ink block mb-4">
+                        MOMO & CO<span class="text-cobalt">.</span>
+                    </a>
+                    <p class="text-xs text-ink-muted font-light leading-relaxed max-w-xs mb-6">
+                        Концептуальное кафе, где эстетика спешелти кофе соединяется с бескомпромиссной заботой о детях.
+                    </p>
+                    <a href="mailto:hello@momocoffee.ru" class="font-mono text-xs text-cobalt font-bold hover:underline">
+                        hello@momocoffee.ru
+                    </a>
+                </div>
+
+                <!-- Col 2: Navigation -->
+                <div>
+                    <h5 class="font-mono text-xs uppercase tracking-widest text-ink font-bold mb-4">Навигация</h5>
+                    <ul class="space-y-2 font-mono text-xs text-ink-muted">
+                        <li><a href="#space" class="hover:text-cobalt transition-colors">Зонирование залов</a></li>
+                        <li><a href="#philosophy" class="hover:text-cobalt transition-colors">Концепция тишины</a></li>
+                        <li><a href="#menu" class="hover:text-cobalt transition-colors">Кураторское меню</a></li>
+                        <li><a href="#reservation-section" class="hover:text-cobalt transition-colors">Бронирование столика</a></li>
+                        <li><a href="#location" class="hover:text-cobalt transition-colors">Локация и удобства</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Hours -->
+                <div>
+                    <h5 class="font-mono text-xs uppercase tracking-widest text-ink font-bold mb-4">Режим работы</h5>
+                    <ul class="space-y-2 font-mono text-xs text-ink-muted">
+                        <li>Будни: 09:00 — 21:00</li>
+                        <li>Выходные: 09:00 — 22:00</li>
+                        <li>Игровая комната: с 10:00</li>
+                        <li class="text-cobalt font-bold">Дежурный бэбиситтер: 10:00 — 20:00</li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Newsletter -->
+                <div>
+                    <h5 class="font-mono text-xs uppercase tracking-widest text-ink font-bold mb-4">Momo Letters</h5>
+                    <p class="text-xs text-ink-muted font-light mb-4">Анонсы закрытых лекций по детской психологии и каппингов для мам:</p>
+                    <form onsubmit="handleNewsletterSubmit(event)" class="flex gap-2">
+                        <input type="email" id="nlEmail" placeholder="your@email.com" required class="w-full px-3 py-2 rounded-lg bg-white hairline-all text-xs font-mono focus:outline-none focus:border-cobalt">
+                        <button type="submit" class="px-4 py-2 rounded-lg bg-cobalt text-white font-mono text-xs uppercase font-bold hover:bg-cobalt-hover transition-colors shrink-0">
+                            OK
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Bottom Copyright & Typo Accent -->
+            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px] text-ink-muted">
+                <div>
+                    © 2026 MOMO & CO. ARCHITECTURAL FAMILY CAFE. ALL RIGHTS RESERVED.
+                </div>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-cobalt transition-colors">TELEGRAM</a>
+                    <a href="#" class="hover:text-cobalt transition-colors">PINTEREST</a>
+                    <a href="#" class="hover:text-cobalt transition-colors">INSTAGRAM</a>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- Reservation Modal Popup -->
+    <div id="bookingModalBackdrop" class="fixed inset-0 z-50 bg-ink/60 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div id="bookingModalCard" class="bg-white rounded-3xl max-w-lg w-full p-8 md:p-10 hairline-all shadow-2xl transform scale-95 transition-all duration-300 relative">
+            <button onclick="closeBookingModal()" aria-label="Закрыть" class="absolute top-6 right-6 w-8 h-8 rounded-full hairline-all flex items-center justify-center text-ink hover:bg-paper transition-colors font-mono text-xs">
+                ✕
+            </button>
+
+            <div class="w-12 h-12 rounded-2xl bg-cobalt-subtle text-cobalt flex items-center justify-center font-bold text-xl mb-6">
+                ✦
+            </div>
+
+            <span class="font-mono text-xs uppercase tracking-widest text-cobalt font-bold block mb-1">
+                [ РЕЗЕРВ СТОЛИКА ]
+            </span>
+            <h3 class="font-syne font-bold text-2xl uppercase tracking-tight text-ink mb-2">
+                Забота начинается с брони
+            </h3>
+            <p class="text-xs text-ink-muted font-light mb-6">
+                Укажите контакты. Мы свяжемся в Telegram за час до визита для подтверждения.
+            </p>
+
+            <form onsubmit="handleModalReservationSubmit(event)" class="space-y-4">
+                <div>
+                    <label for="modalName" class="block font-mono text-[11px] uppercase text-ink font-bold mb-1">Имя родителя</label>
+                    <input type="text" id="modalName" required placeholder="Например, Анна" class="w-full px-4 py-2.5 rounded-xl hairline-all bg-paper font-mono text-xs focus:outline-none focus:border-cobalt">
+                </div>
+                <div>
+                    <label for="modalPhone" class="block font-mono text-[11px] uppercase text-ink font-bold mb-1">Номер телефона</label>
+                    <input type="tel" id="modalPhone" required placeholder="+7 (999) 000-00-00" class="w-full px-4 py-2.5 rounded-xl hairline-all bg-paper font-mono text-xs focus:outline-none focus:border-cobalt">
+                </div>
+                <div>
+                    <label for="modalNotes" class="block font-mono text-[11px] uppercase text-ink font-bold mb-1">Возраст малыша и пожелания</label>
+                    <input type="text" id="modalNotes" placeholder="Например, 1.5 года, нужен стульчик Stokke" class="w-full px-4 py-2.5 rounded-xl hairline-all bg-paper font-mono text-xs focus:outline-none focus:border-cobalt">
+                </div>
+
+                <button type="submit" class="w-full py-3.5 rounded-xl bg-cobalt text-white font-mono text-xs uppercase font-bold tracking-wider hover:bg-cobalt-hover transition-colors mt-2">
+                    Подтвердить резерв
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Confirmation Dialog (No alert()) -->
+    <div id="successDialogBackdrop" class="fixed inset-0 z-50 bg-ink/70 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-white rounded-3xl max-w-md w-full p-8 text-center hairline-all shadow-2xl">
+            <div class="w-14 h-14 rounded-full bg-cobalt text-white flex items-center justify-center font-bold text-2xl mx-auto mb-4">
+                ✓
+            </div>
+            <span class="font-mono text-[11px] uppercase tracking-widest text-cobalt font-bold block mb-1">
+                // БРОНИРОВАНИЕ ЗАРЕГИСТРИРОВАНО
+            </span>
+            <h3 class="font-syne font-bold text-2xl uppercase text-ink mb-3">
+                Ждем вас в гости!
+            </h3>
+            <p id="successDialogDetails" class="text-xs text-ink-muted leading-relaxed font-light mb-6">
+                Столик зарезервирован. Растущий стульчик и игрушки уже подготовлены.
+            </p>
+            <button onclick="closeSuccessDialog()" class="w-full py-3 rounded-xl bg-ink text-white font-mono text-xs uppercase font-bold hover:bg-cobalt transition-colors">
+                Отлично, спасибо
+            </button>
+        </div>
+    </div>
+
+    <!-- Minimalist Toast Message -->
+    <div id="toastNotification" class="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl bg-ink text-white font-mono text-xs hairline-all shadow-lg transform translate-y-24 opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-3">
+        <span class="w-2 h-2 rounded-full bg-cobalt"></span>
+        <span id="toastText">Уведомление</span>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
